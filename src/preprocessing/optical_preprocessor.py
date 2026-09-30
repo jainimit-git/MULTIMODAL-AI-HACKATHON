@@ -46,3 +46,4 @@ class OpticalPreprocessor:
             "ndvi": ndvi,
             "water_mask": water_mask,
         }
+

@@ -49,3 +49,4 @@ def test_sar_change_detector():
     res = detector.detect_change(pre_vv, pre_vh, post_vv, post_vh)
     assert res["flood_debris_mask"][0, 0] == 1
     assert res["flood_debris_mask"][0, 1] == 0
+

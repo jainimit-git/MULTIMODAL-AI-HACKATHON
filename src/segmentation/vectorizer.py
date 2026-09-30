@@ -102,3 +102,4 @@ class MaskVectorizer:
             "total_polygons": len(features),
             "provenance": "Multimodal AI Flood Segmentation & Vectorizer",
         }
+

@@ -1,50 +1,55 @@
 # PROJECT STATUS
 
 ## Current Phase
-Phase 2 & 3 Complete (Preprocessing, Change Detection & Multimodal AI Segmentation) ➔ Advancing to Phase 4: GIS Infrastructure & Cut-Off Settlement Routing
+Phase 4 Complete (GIS Infrastructure & Cut-Off Settlement Network Routing) ➔ Advancing to Phase 5: Situation Intelligence, Bilingual AI Copilot, Dashboard & EMSR927 Validation
 
 ## Overall Completion %
-55%
+75%
 
 ## Last Updated
-2026-09-30T23:52:30+05:30
+2026-09-30T23:58:00+05:30
 
 ## Current Working Branch
 `main`
 
 ## Latest Commit
-`baf21fc` (pending Phase 2/3 commit)
+`3e83e1e` (pending Phase 4 commit)
 
 ## What Has Been Completed
 - **Phase 0 (Foundation & Compliance):**
-  - Requirements analysis from `Space Track.pdf` and compliance architecture.
-  - Complete documentation: `HACKATHON_REQUIREMENTS.md`, `COMPLIANCE_CHECKLIST.md`, `DATA_PROVENANCE.md`, `LIMITATIONS.md`, `ARCHITECTURE.md`, `DEMO_SCRIPT.md`.
-  - Quality control & CI/CD workflow configured in `.github/workflows/tests.yml`.
+  - Problem requirements from `Space Track.pdf`, compliance architecture, CI/CD pipeline.
+  - Documents: `HACKATHON_REQUIREMENTS.md`, `COMPLIANCE_CHECKLIST.md`, `DATA_PROVENANCE.md`, `LIMITATIONS.md`, `ARCHITECTURE.md`, `DEMO_SCRIPT.md`.
 - **Phase 1 (Satellite & Data Acquisition):**
-  - Copernicus CDSE OData discovery client (`src/acquisition/cdse_client.py`).
+  - CDSE OData discovery client (`src/acquisition/cdse_client.py`).
   - Sentinel-1 same-orbit track matcher (`src/acquisition/s1_finder.py`).
-  - Sentinel-2 cloud filter ($\le 30\%$) finder (`src/acquisition/s2_finder.py`).
+  - Sentinel-2 cloud filter finder (`src/acquisition/s2_finder.py`).
   - Historical pre-event OSM extractor via ohsome v1 adapter (`src/acquisition/osm_client.py`).
   - Copernicus WorldDEM-30 elevation & slope loader (`src/acquisition/dem_loader.py`).
-- **Phase 2 & 3 (Preprocessing, Change Detection & Multimodal AI Segmentation):**
-  - SAR dual-polarization (VV/VH) calibration, Lee speckle filtering, and slope masking (`src/preprocessing/sar_preprocessor.py`).
-  - Optical spectral indices: MNDWI, NDWI, NDVI calculation (`src/preprocessing/optical_preprocessor.py`).
-  - Same-orbit Sentinel-1 log-ratio change detection engine (`src/change_detection/sar_change.py`).
-  - Multimodal 6-channel PyTorch UNet flood segmentation architecture (`src/segmentation/multimodal_unet.py`).
+- **Phase 2 & 3 (Preprocessing & Multimodal AI Segmentation):**
+  - SAR calibration & Lee speckle filter (`src/preprocessing/sar_preprocessor.py`).
+  - Optical MNDWI/NDWI/NDVI calculation (`src/preprocessing/optical_preprocessor.py`).
+  - Sentinel-1 same-orbit log-ratio change detection engine (`src/change_detection/sar_change.py`).
+  - PyTorch 6-channel Multimodal UNet segmentation architecture (`src/segmentation/multimodal_unet.py`).
   - Morphological vectorizer and polygonizer (`src/segmentation/vectorizer.py`).
-  - Integrated model runner (`src/segmentation/model_runner.py`).
   - Model Card authored in `docs/MODEL_CARD.md`.
-  - 20/20 unit tests authored and verified passing.
+- **Phase 4 (GIS Infrastructure, Topological Routing & Flow Tracing):**
+  - Spatial overlap infrastructure exposure analyzer (`src/gis/infrastructure_analyzer.py`).
+  - Topological road network graph builder (`src/network/road_graph.py`).
+  - Post-disaster reachability & cut-off village isolation engine (`src/network/cutoff_analyzer.py`).
+  - Bonus DEM downstream flow-path tracer (`src/dem/flow_tracer.py`).
+  - 23/23 unit tests authored and verified passing.
 
 ## What Is Currently Being Worked On
-- **Phase 4: GIS Infrastructure & Cut-Off Settlement Routing (`src/gis/`, `src/network/`)**:
-  - Spatial overlay analysis between flood/debris polygons and pre-event OSM infrastructure (roads, bridges, buildings).
-  - NetworkX topological road graph construction.
-  - Dijkstra post-disaster reachability solver identifying isolated/severed settlements.
-  - Bonus DEM flow-path tracer (`src/dem/`).
+- **Phase 5: Situation Intelligence, Bilingual AI Copilot, Dashboard & EMSR927 Validation**:
+  - Deterministic one-page Situation Report generator (`src/reporting/sitrep_generator.py`).
+  - Grounded bilingual (English & Nepali) AI Copilot (`src/copilot/copilot_engine.py`) operating strictly on `analysis_result.json`.
+  - Post-hoc Copernicus EMS EMSR927 validation benchmark (`src/validation/emsr927_validator.py`).
+  - FastAPI backend API routes (`backend/main.py`, `backend/routes/`).
+  - Interactive MapLibre/Leaflet Web Dashboard (`frontend/`).
+  - End-to-end command-line executable (`scripts/run_pipeline.py`).
 
 ## What Is Next
-- **Phase 5:** Situation intelligence, 1-page report, bilingual AI Copilot, interactive map dashboard, and Trishuli validation against EMSR927.
+- Final full E2E execution, verification on Trishuli and Judge mode, and final GitHub push.
 
 ## Known Bugs
 None.
@@ -99,32 +104,30 @@ uvicorn backend.main:app --reload --port 8000
 4. All situation report metrics originate from verifiable pipeline JSON; no LLM number hallucination permitted.
 
 ## Files Recently Changed
-- `src/preprocessing/sar_preprocessor.py`
-- `src/preprocessing/optical_preprocessor.py`
-- `src/preprocessing/__init__.py`
-- `src/change_detection/sar_change.py`
-- `src/change_detection/__init__.py`
-- `src/segmentation/multimodal_unet.py`
-- `src/segmentation/vectorizer.py`
-- `src/segmentation/model_runner.py`
-- `src/segmentation/__init__.py`
-- `docs/MODEL_CARD.md`
-- `tests/unit/test_preprocessing.py`
-- `tests/unit/test_segmentation.py`
+- `src/gis/infrastructure_analyzer.py`
+- `src/gis/__init__.py`
+- `src/network/road_graph.py`
+- `src/network/cutoff_analyzer.py`
+- `src/network/__init__.py`
+- `src/dem/flow_tracer.py`
+- `src/dem/__init__.py`
+- `tests/unit/test_gis.py`
+- `tests/unit/test_network.py`
+- `tests/unit/test_dem_flow.py`
 - `state/PROJECT_STATUS.md`
 
 ## Last Successful Test
-`pytest tests/unit/ -v` (20 passed in 39.91s on 2026-09-30)
+`pytest tests/unit/ -v` (23 passed in 69.05s on 2026-09-30)
 
 ## Last Successful End-to-End Run
-Phase 1-3 modular pipelines verified.
+Phase 1-4 modular pipelines verified.
 
 ## GitHub Continuation Instructions
 If switching to another AI agent / account:
 1. Clone or pull latest `main`.
 2. Inspect `state/PROJECT_STATUS.md` and `docs/HACKATHON_REQUIREMENTS.md`.
 3. Check `git status` and run `pytest tests/unit/`.
-4. Proceed to Phase 4 (GIS & Routing) as identified in `What Is Next`.
+4. Proceed to Phase 5 (Reporting, Copilot, Dashboard, Validation) as identified in `What Is Next`.
 
 ## Things The Next AI Agent Must NOT Change
 - NEVER feed EMSR927 or post-event OSM into training or inference paths.

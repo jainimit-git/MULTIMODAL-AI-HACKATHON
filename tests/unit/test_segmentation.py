@@ -59,3 +59,4 @@ def test_multimodal_pipeline_runner():
     assert "total_affected_area_km2" in result
     assert result["total_affected_area_km2"] >= 0
     assert "Contains modified Copernicus Sentinel data 2026." in result["attribution"]
+

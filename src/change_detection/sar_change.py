@@ -59,3 +59,4 @@ class SARChangeDetector:
             "flood_debris_mask": combined_change.astype(np.uint8),
             "change_confidence": normalized_confidence,
         }
+
