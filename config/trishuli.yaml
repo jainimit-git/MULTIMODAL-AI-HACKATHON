@@ -1,0 +1,44 @@
+# ==============================================================================
+# CASE STUDY CONFIGURATION: AUGUST 2026 TRISHULI FLOOD, NEPAL
+# Bhote Koshi - Trishuli River Corridor
+# ==============================================================================
+event:
+  name: "August 2026 Trishuli Debris Flood"
+  country: "Nepal"
+  region: "Bagmati Province / Rasuwa - Nuwakot District"
+  river_corridor: "Bhote Koshi - Trishuli"
+  event_date: "2026-08-26"
+  description: "Glacial avalanche and high-altitude collapse triggering debris flood along Bhote Koshi / Trishuli river valley."
+
+aoi:
+  name: "Trishuli_Corridor_AOI"
+  # Bounding Box [min_lon, min_lat, max_lon, max_lat]
+  bbox: [85.15, 27.85, 85.45, 28.25]
+  center: [85.30, 28.05]
+  crs: "EPSG:4326"
+  utm_epsg: "EPSG:32645"
+
+satellites:
+  sentinel1:
+    preferred_relative_orbit: 19
+    orbit_direction: "DESCENDING"
+    pre_event_date: "2026-08-16"
+    post_event_date: "2026-08-28"
+    same_orbit_track_interval_days: 12
+  sentinel2:
+    pre_event_date: "2026-08-14"
+    post_event_date: "2026-08-29"
+
+osm:
+  snapshot_timestamp: "2026-07-27T00:00:00Z"
+  target_facilities:
+    - name: "Trishuli District Hospital"
+      type: "hospital"
+      lat: 27.925
+      lon: 85.185
+
+validation:
+  reference_layer: "EMSR927"
+  is_validation_only: true
+  never_use_as_input: true
+

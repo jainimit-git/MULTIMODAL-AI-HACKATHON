@@ -1,0 +1,37 @@
+# ==============================================================================
+# JUDGE EVALUATION MODE CONFIGURATION
+# Supports dynamic runtime input for ANY arbitrary AOI and flood event date.
+# ==============================================================================
+mode: "judge_live_evaluation"
+
+defaults:
+  buffer_search_days_pre: 24
+  buffer_search_days_post: 14
+  max_cloud_cover_s2: 30.0
+  auto_select_same_orbit: true
+  auto_fetch_osm_pre_event: true
+  generate_sitrep: true
+  generate_visual_layers: true
+
+execution_flow:
+  - step: 1
+    name: "Validate AOI & Date Input"
+  - step: 2
+    name: "Autonomous CDSE Catalog Discovery (S1 Same-Track & S2)"
+  - step: 3
+    name: "Copernicus WorldDEM-30 Elevation Clip"
+  - step: 4
+    name: "Pre-Event OSM Snapshot Query (ohsome adapter)"
+  - step: 5
+    name: "SAR Calibration & Radiometric Normalization"
+  - step: 6
+    name: "Multimodal AI Flood/Debris Segmentation"
+  - step: 7
+    name: "Infrastructure Spatial Exposure Analysis"
+  - step: 8
+    name: "Topological Road Graph Routing & Cut-off Village Identification"
+  - step: 9
+    name: "Situation Report & Bilingual Q&A Synthesis"
+  - step: 10
+    name: "Dashboard GeoJSON Bundling"
+

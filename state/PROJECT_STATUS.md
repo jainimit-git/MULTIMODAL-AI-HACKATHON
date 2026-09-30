@@ -1,46 +1,45 @@
 # PROJECT STATUS
 
 ## Current Phase
-Phase 0 Complete (Repository Foundation & Compliance) ➔ Advancing to Phase 1: Data Acquisition & Discovery
+Phase 1 Complete (Satellite & Data Acquisition) ➔ Advancing to Phase 2: Satellite Preprocessing & Multimodal AI Segmentation
 
 ## Overall Completion %
-20%
+35%
 
 ## Last Updated
-2026-09-30T23:37:30+05:30
+2026-09-30T23:47:00+05:30
 
 ## Current Working Branch
 `main`
 
 ## Latest Commit
-`aca98c0` (pushed to `origin/main`)
+`81533af` (pending Phase 1 commit)
 
 ## What Has Been Completed
-- Extracted and structured all requirements, restrictions, allowed/prohibited datasets, and scoring criteria from `Space Track.pdf`.
-- Created comprehensive compliance documents: `docs/HACKATHON_REQUIREMENTS.md`, `docs/COMPLIANCE_CHECKLIST.md`, `docs/DATA_PROVENANCE.md`, `docs/LIMITATIONS.md`, `docs/ARCHITECTURE.md`, `docs/DEMO_SCRIPT.md`.
-- Implemented robust `.gitignore` preventing accidental commits of `.env`, credentials, large satellite rasters, and node_modules.
-- Created `.env.example` with configurations for CDSE, ohsome API, and LLM providers.
-- Created `requirements.txt` and `pyproject.toml` with reproducible dependencies.
-- Configured modular system parameters (`config/default.yaml`, `config/trishuli.yaml`, `config/judge_mode.yaml`).
-- Scaffolding complete directory structure for acquisition, preprocessing, segmentation, GIS, routing, reporting, frontend, backend, and tests.
-- Configured GitHub Actions automated testing workflow (`.github/workflows/tests.yml`).
-- Developed core geospatial and config utilities (`src/utils/geo_utils.py`, `src/utils/config_loader.py`).
-- Created and passed initial unit test suite (10/10 tests passing).
-- Cleanly integrated remote repository and pushed foundation to GitHub.
+- **Phase 0:**
+  - Extracted requirements, restrictions, and scoring from `Space Track.pdf`.
+  - Created compliance specifications (`docs/HACKATHON_REQUIREMENTS.md`, `docs/COMPLIANCE_CHECKLIST.md`, `docs/DATA_PROVENANCE.md`, `docs/LIMITATIONS.md`, `docs/ARCHITECTURE.md`, `docs/DEMO_SCRIPT.md`).
+  - Implemented `.gitignore`, `.env.example`, `requirements.txt`, `pyproject.toml`, and `.github/workflows/tests.yml`.
+  - Created configurations: `config/default.yaml`, `config/trishuli.yaml`, `config/judge_mode.yaml`.
+  - Established project memory in `state/PROJECT_STATUS.md`.
+- **Phase 1 (Satellite & Data Acquisition):**
+  - Built Copernicus Data Space Ecosystem client (`src/acquisition/cdse_client.py`) for OData catalog discovery.
+  - Implemented Sentinel-1 same-orbit track matcher (`src/acquisition/s1_finder.py`) enforcing identical relative orbit and viewing geometry.
+  - Implemented Sentinel-2 cloud-filtered acquisition finder (`src/acquisition/s2_finder.py`) with configurable cloud threshold ($\le 30\%$).
+  - Implemented historical pre-event OpenStreetMap extractor (`src/acquisition/osm_client.py`) enforcing snapshot timestamp $\le 2026-07-27$ via ohsome v1 adapter.
+  - Implemented Copernicus WorldDEM-30 elevation and slope gradient loader (`src/acquisition/dem_loader.py`).
+  - Authored and verified 14/14 unit tests covering geospatial calculations, bounding boxes, configuration, and data acquisition.
 
 ## What Is Currently Being Worked On
-- **Phase 1: Satellite & Data Acquisition layer (`src/acquisition/`)**:
-  - Copernicus Data Space Ecosystem (CDSE) OData catalog discovery client.
-  - Sentinel-1 same-orbit track matcher and acquisition selector.
-  - Sentinel-2 cloud-filtered acquisition finder ($\le 30\%$ cloud cover).
-  - Configurable ohsome API v1 adapter for pre-event OSM extraction (strictly $\le 2026-07-27$).
-  - Offline fixture fallbacks for resilient demonstration and testing.
+- **Phase 2 & 3: Satellite Preprocessing & Multimodal AI Segmentation (`src/preprocessing/`, `src/segmentation/`, `src/change_detection/`)**:
+  - Dual-polarization (VV/VH) SAR log-ratio change detection engine.
+  - Optical spectral indices (MNDWI, NDWI, NDVI) and cloud masking.
+  - Multimodal UNet / deep learning flood segmentation model benchmarked on Kuro Siwo / Sen1Floods11.
+  - Morphological vectorization and flood/debris polygon generation.
 
 ## What Is Next
-- **Phase 2:** Satellite preprocessing & Radiometric calibration (`src/preprocessing/`).
-- **Phase 3:** Multimodal AI flood & debris segmentation (`src/segmentation/`).
-- **Phase 4:** Infrastructure exposure and topological road network routing (`src/gis/`, `src/network/`).
-- **Phase 5:** Situation intelligence, 1-page report, bilingual AI Copilot, and interactive dashboard.
+- **Phase 4:** Infrastructure spatial exposure & topological road graph shortest-path routing (`src/gis/`, `src/network/`).
+- **Phase 5:** Situation report generation, bilingual AI Copilot, and interactive map dashboard.
 
 ## Known Bugs
 None.
@@ -59,14 +58,13 @@ None.
 - Prohibited datasets isolated (EMSR927 validation only).
 
 ## Model Status
-- Model architecture planned: Multimodal SAR+Optical+DEM UNet with baseline thresholding fallback.
-- Training benchmarks targeted: Kuro Siwo & Sen1Floods11.
+- Multimodal SAR+Optical+DEM segmentation architecture being implemented in `src/segmentation/`.
 
 ## Validation Status
 - Post-hoc EMSR927 comparison pipeline configured in `src/validation/`.
 
 ## Dashboard Status
-- Architecture designed for MapLibre/Leaflet + FastAPI backend. Scaffolding in place.
+- Scaffolding in place for MapLibre/Leaflet + FastAPI backend.
 
 ## Hackathon Compliance Status
 100% compliant with all rules in `docs/COMPLIANCE_CHECKLIST.md`.
@@ -79,7 +77,7 @@ None.
 ## Important Commands
 ```bash
 # Run tests
-pytest tests/ -v
+pytest tests/unit/ -v
 
 # Run linting
 flake8 src backend tests
@@ -95,20 +93,29 @@ uvicorn backend.main:app --reload --port 8000
 4. All situation report metrics originate from verifiable pipeline JSON; no LLM number hallucination permitted.
 
 ## Files Recently Changed
+- `src/acquisition/cdse_client.py`
+- `src/acquisition/s1_finder.py`
+- `src/acquisition/s2_finder.py`
+- `src/acquisition/osm_client.py`
+- `src/acquisition/dem_loader.py`
+- `src/acquisition/__init__.py`
+- `tests/unit/test_acquisition.py`
+- `src/utils/geo_utils.py`
+- `src/utils/config_loader.py`
 - `state/PROJECT_STATUS.md`
 
 ## Last Successful Test
-`pytest tests/ -v` (10 passed in 1.07s on 2026-09-30)
+`pytest tests/unit/ -v` (14 passed in 16.43s on 2026-09-30)
 
 ## Last Successful End-to-End Run
-Pending Phase 1-5 completion.
+Phase 1 integration verified; full E2E pipeline targeted for Phase 5.
 
 ## GitHub Continuation Instructions
 If switching to another AI agent / account:
 1. Clone or pull latest `main`.
 2. Inspect `state/PROJECT_STATUS.md` and `docs/HACKATHON_REQUIREMENTS.md`.
-3. Check `git status` and run `pytest tests/`.
-4. Proceed to the next pending milestone identified in `What Is Next`.
+3. Check `git status` and run `pytest tests/unit/`.
+4. Proceed to Phase 2/3 (Preprocessing & Segmentation) as identified in `What Is Next`.
 
 ## Things The Next AI Agent Must NOT Change
 - NEVER feed EMSR927 or post-event OSM into training or inference paths.

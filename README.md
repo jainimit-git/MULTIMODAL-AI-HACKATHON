@@ -160,3 +160,4 @@ This project adheres strictly to mandatory attribution requirements:
 
 ## 7. Project Memory & Continuity
 For continuous agent development and session handoffs, see [`state/PROJECT_STATUS.md`](state/PROJECT_STATUS.md).
+

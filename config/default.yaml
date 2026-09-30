@@ -1,0 +1,68 @@
+# ==============================================================================
+# DEFAULT SYSTEM CONFIGURATION
+# ==============================================================================
+system:
+  name: "AEROSIS"
+  version: "0.1.0"
+  description: "Multimodal Satellite Disaster Intelligence System"
+  educational_prototype_notice: "Educational prototype — not an operational emergency-response system."
+
+paths:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  cache_dir: "data/cache"
+  output_dir: "data/outputs"
+  fixtures_dir: "tests/fixtures"
+
+satellites:
+  copernicus_cdse:
+    odata_base_url: "https://catalogue.dataspace.copernicus.eu/odata/v1"
+    token_url: "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
+  sentinel1:
+    product_type: "GRD"
+    sensor_mode: "IW"
+    polarizations: ["VV", "VH"]
+    same_orbit_track_required: true
+    search_window_days_pre: 24
+    search_window_days_post: 14
+  sentinel2:
+    product_type: "S2MSI2A"
+    max_cloud_cover_percent: 30.0
+    search_window_days_pre: 30
+    search_window_days_post: 15
+  dem:
+    source: "Copernicus WorldDEM-30"
+    resolution_meters: 30
+
+osm:
+  ohsome_api_url: "https://api.ohsome.org/v1"
+  snapshot_date_cutoff: "2026-08-26T00:00:00Z"
+  latest_safe_snapshot: "2026-07-27T00:00:00Z"
+  tags:
+    highways: ["primary", "secondary", "tertiary", "residential", "unclassified", "track", "trunk"]
+    buildings: true
+    bridges: true
+    amenities: ["hospital", "clinic", "doctors"]
+    places: ["town", "village", "hamlet"]
+
+segmentation:
+  sar_change_threshold_db: -2.5
+  mndwi_water_threshold: 0.15
+  slope_max_flood_degrees: 35.0
+  min_patch_size_pixels: 9
+  model_type: "multimodal_unet"
+  confidence_threshold: 0.65
+
+network:
+  critical_nodes: ["hospital", "town", "emergency_hub"]
+  penalize_severed_edges: true
+  search_radius_meters: 50000
+
+attributions:
+  copernicus_sentinel: "Contains modified Copernicus Sentinel data 2026."
+  copernicus_dem: "Produced using Copernicus WorldDEM-30 © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the European Union and ESA; all rights reserved."
+  osm: "© OpenStreetMap contributors."
+  kuro_siwo: "Bountos et al., 2024 (NeurIPS 2024)"
+  sen1floods11: "Bonafilia et al., 2020 (CVPR Workshops 2020)"
+  copernicus_ems: "European Union, Copernicus Emergency Management Service data (EMSR927)"
+
