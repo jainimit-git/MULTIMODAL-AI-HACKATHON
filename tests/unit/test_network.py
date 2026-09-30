@@ -51,3 +51,4 @@ def test_road_network_routing_and_cutoff():
     settlements = cutoff_res["settlements"]
     cut_off_names = [s["name"] for s in settlements if s["is_cut_off"]]
     assert any("Village" in name for name in cut_off_names)
+

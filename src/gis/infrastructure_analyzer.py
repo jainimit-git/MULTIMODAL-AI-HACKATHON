@@ -132,3 +132,4 @@ class InfrastructureAnalyzer:
             "annotated_roads": {"type": "FeatureCollection", "features": annotated_roads},
             "annotated_buildings": {"type": "FeatureCollection", "features": annotated_buildings},
         }
+

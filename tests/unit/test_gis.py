@@ -43,3 +43,4 @@ def test_infrastructure_exposure_analysis():
     assert summary["total_bridges"] >= 2
     assert summary["affected_bridges"] >= 1
     assert len(result["severed_road_ids"]) >= 1
+

@@ -24,3 +24,4 @@ def test_dem_flow_tracer():
     assert res["flow_path_geojson"]["geometry"]["type"] == "LineString"
     assert len(res["flow_path_geojson"]["geometry"]["coordinates"]) >= 2
     assert "Estimated terrain-driven downstream path" in res["disclaimer"] or "terrain-gradient" in res["disclaimer"]
+

@@ -81,3 +81,4 @@ class RoadGraphBuilder:
                 best_node = node_id
 
         return best_node or ""
+
