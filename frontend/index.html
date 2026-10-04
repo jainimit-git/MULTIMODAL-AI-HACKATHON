@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEROSIS — Multimodal Satellite Disaster Intelligence</title>
+  
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Font Awesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="header">
+    <div class="logo-group">
+      <div class="logo-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+      <div class="logo-text">
+        <h1>AEROSIS <span class="badge">V1.0</span></h1>
+        <p class="subtitle">Multimodal Satellite Disaster Intelligence System</p>
+      </div>
+    </div>
+
+    <div class="event-badge" id="eventBadge">
+      <span class="pulse-dot"></span>
+      <span id="activeEventName">August 2026 Trishuli Flood (Nepal)</span>
+      <span class="track-tag" id="orbitTrackTag">S1 Track: R19 (Descending)</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" id="btnTrishuliBenchmark"><i class="fa-solid fa-mountain"></i> Trishuli Benchmark</button>
+      <button class="btn btn-primary" id="btnJudgeMode"><i class="fa-solid fa-gavel"></i> Judge Live Mode</button>
+    </div>
+  </header>
+
+  <!-- Prototype Warning Banner -->
+  <div class="disclaimer-bar">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span><strong>EDUCATIONAL RESEARCH PROTOTYPE:</strong> Developed for the IIT Mandi Multimodal AI Hackathon. Strictly uses permitted open data (Sentinel-1, Sentinel-2, Copernicus DEM, Pre-Event OSM $\le$ 2026-07-27). Not certified for operational rescue dispatch.</span>
+  </div>
+
+  <!-- Main Workspace -->
+  <div class="workspace">
+    <!-- Left / Center: Map Viewport -->
+    <div class="map-container">
+      <div id="map"></div>
+      
+      <!-- Map Floating Overlay: Layer Controls -->
+      <div class="map-overlay layer-controls">
+        <h3><i class="fa-solid fa-layer-group"></i> Active Layers</h3>
+        <label><input type="checkbox" id="layerFlood" checked> <span class="layer-color flood-color"></span> AI Flood/Debris Extent</label>
+        <label><input type="checkbox" id="layerRoads" checked> <span class="layer-color roads-color"></span> OSM Road Network</label>
+        <label><input type="checkbox" id="layerSevered" checked> <span class="layer-color severed-color"></span> Severed Roads (Cut-Off)</label>
+        <label><input type="checkbox" id="layerSettlements" checked> <span class="layer-color settlement-color"></span> Settlements (Green: OK, Red: Cut)</label>
+        <label><input type="checkbox" id="layerFlowPath" checked> <span class="layer-color flow-color"></span> DEM Flow-Path Corridor</label>
+      </div>
+
+      <!-- Map Floating Action: Click Flow Path Mode -->
+      <div class="map-overlay flow-tracer-banner" id="flowTracerBanner">
+        <i class="fa-solid fa-water"></i> <strong>Click anywhere on the map</strong> to simulate downstream terrain flow path from that upstream elevation point.
+      </div>
+    </div>
+
+    <!-- Right: Intelligence Deck & Interactive Panels -->
+    <div class="side-panel">
+      <!-- KPI Metric Cards Deck -->
+      <div class="kpi-grid">
+        <div class="kpi-card danger">
+          <div class="kpi-label"><i class="fa-solid fa-triangle-exclamation"></i> Cut-Off Settlements</div>
+          <div class="kpi-value" id="kpiCutoff">--</div>
+          <div class="kpi-sub" id="kpiPopulation">-- Population Isolated</div>
+        </div>
+
+        <div class="kpi-card warning">
+          <div class="kpi-label"><i class="fa-solid fa-water"></i> Flood / Debris Area</div>
+          <div class="kpi-value" id="kpiArea">-- <span class="unit">km²</span></div>
+          <div class="kpi-sub" id="kpiPolygons">-- Polygons Delineated</div>
+        </div>
+
+        <div class="kpi-card info">
+          <div class="kpi-label"><i class="fa-solid fa-road"></i> Affected Roads</div>
+          <div class="kpi-value" id="kpiRoads">-- <span class="unit">km</span></div>
+          <div class="kpi-sub" id="kpiRoadPercent">--% of Network Impacted</div>
+        </div>
+
+        <div class="kpi-card secondary">
+          <div class="kpi-label"><i class="fa-solid fa-bridge"></i> Damaged Bridges</div>
+          <div class="kpi-value" id="kpiBridges">--</div>
+          <div class="kpi-sub" id="kpiBuildings">-- Buildings Exposed</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-copilot"><i class="fa-solid fa-robot"></i> AI Copilot</button>
+        <button class="tab-btn" data-tab="tab-judge"><i class="fa-solid fa-sliders"></i> Judge Evaluation</button>
+        <button class="tab-btn" data-tab="tab-settlements"><i class="fa-solid fa-house-chimney-crack"></i> Settlements</button>
+        <button class="tab-btn" data-tab="tab-sitrep"><i class="fa-solid fa-file-lines"></i> Situation Report</button>
+        <button class="tab-btn" data-tab="tab-validation"><i class="fa-solid fa-chart-simple"></i> Validation</button>
+      </div>
+
+      <!-- Tab Content 1: Grounded Bilingual Copilot -->
+      <div class="tab-content active" id="tab-copilot">
+        <div class="copilot-container">
+          <div class="copilot-header">
+            <span><i class="fa-solid fa-shield-halved"></i> <strong>Grounded AI Copilot (English & Nepali)</strong></span>
+            <span class="badge-grounded">100% Deterministic Grounding</span>
+          </div>
+          <div class="copilot-messages" id="copilotMessages">
+            <div class="message assistant">
+              <div class="bubble">
+                <strong>Namaste & Hello!</strong> I am your situation intelligence copilot. I answer questions strictly based on the satellite segmentation and network reachability analysis.<br><br>
+                Try asking in English or Nepali:<br>
+                • <em>"Which villages are cut off?"</em><br>
+                • <em>"कुन कुन गाउँहरू सम्पर्कविहीन भएका छन्?"</em><br>
+                • <em>"How many bridges are potentially affected?"</em><br>
+                • <em>"What satellite images were used?"</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-prompts">
+            <button class="quick-btn" onclick="askCopilot('Which villages are cut off from the hospital?')">Cut-Off Villages?</button>
+            <button class="quick-btn" onclick="askCopilot('कुन कुन गाउँहरू सम्पर्कविहीन भएका छन्?')">सम्पर्कविहीन गाउँहरू?</button>
+            <button class="quick-btn" onclick="askCopilot('How many bridges are potentially affected?')">Affected Bridges?</button>
+            <button class="quick-btn" onclick="askCopilot('What are the system limitations?')">Limitations?</button>
+          </div>
+
+          <div class="copilot-input-group">
+            <input type="text" id="copilotInput" placeholder="Ask in English or नेपाली..." onkeypress="if(event.key==='Enter') sendCopilotQuery()">
+            <button class="btn btn-primary" onclick="sendCopilotQuery()"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Judge Live Evaluation Form -->
+      <div class="tab-content" id="tab-judge">
+        <div class="panel-section">
+          <h3><i class="fa-solid fa-globe"></i> Live Evaluation Mode (Any Area & Date)</h3>
+          <p class="section-desc">The system autonomously searches CDSE for same-orbit Sentinel-1 & Sentinel-2, downloads Copernicus WorldDEM-30, queries pre-event OSM, and computes all outputs live.</p>
+          
+          <form id="judgeForm" onsubmit="handleJudgeSubmit(event)">
+            <div class="form-group">
+              <label>Area of Interest (Bounding Box [min_lon, min_lat, max_lon, max_lat])</label>
+              <input type="text" id="judgeBbox" class="form-control" value="85.15, 27.85, 85.45, 28.25" required>
+            </div>
+
+            <div class="form-group">
+              <label>Flood / Disaster Event Date</label>
+              <input type="date" id="judgeDate" class="form-control" value="2026-08-26" required>
+            </div>
+
+            <div class="form-group">
+              <label>Event Name / Region</label>
+              <input type="text" id="judgeName" class="form-control" value="Judge Live Evaluation Event" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="btnExecuteAnalysis">
+              <i class="fa-solid fa-bolt"></i> Run End-to-End Analysis
+            </button>
+          </form>
+
+          <div class="execution-progress" id="executionProgress" style="display:none;">
+            <div class="spinner"></div>
+            <div id="progressText">Executing multimodal pipeline...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Settlements Details -->
+      <div class="tab-content" id="tab-settlements">
+        <div class="panel-section">
+          <h3><i class="fa-solid fa-people-roof"></i> Settlement Connectivity Roster</h3>
+          <div class="settlements-list" id="settlementsList">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 4: Situation Report -->
+      <div class="tab-content" id="tab-sitrep">
+        <div class="panel-section">
+          <div class="sitrep-header">
+            <h3><i class="fa-solid fa-file-contract"></i> One-Page Situation Report</h3>
+            <button class="btn btn-sm btn-secondary" onclick="copySitrep()"><i class="fa-solid fa-copy"></i> Copy Markdown</button>
+          </div>
+          <pre class="sitrep-viewer" id="sitrepViewer">Loading report...</pre>
+        </div>
+      </div>
+
+      <!-- Tab Content 5: EMSR927 Validation Benchmark -->
+      <div class="tab-content" id="tab-validation">
+        <div class="panel-section">
+          <h3><i class="fa-solid fa-scale-balanced"></i> EMSR927 Benchmark Comparison</h3>
+          <p class="section-desc">Scientific comparison against official Copernicus EMS Rapid Mapping Activation EMSR927 (Used strictly for post-hoc validation; never as inference input).</p>
+          
+          <div class="validation-deck" id="validationDeck">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer & Required Attributions -->
+  <footer class="footer">
+    <div class="attribution-text">
+      <strong>Required Attributions:</strong>
+      <span>"Contains modified Copernicus Sentinel data 2026."</span> |
+      <span>"Produced using Copernicus WorldDEM-30 © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the European Union and ESA; all rights reserved."</span> |
+      <span>"© OpenStreetMap contributors."</span> |
+      <span>Training Benchmarks: Kuro Siwo (NeurIPS 2024), Sen1Floods11 (CVPRW 2020)</span> |
+      <span>Validation Reference: European Union, Copernicus Emergency Management Service data (EMSR927)</span>
+    </div>
+  </footer>
+
+  <!-- Main Dashboard Script -->
+  <script src="app.js"></script>
+</body>
+</html>

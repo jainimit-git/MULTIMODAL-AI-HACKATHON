@@ -33,3 +33,4 @@ def test_emsr927_validator():
     assert "dice_f1_score" in metrics
     assert metrics["intersection_over_union_iou"] >= 0.0
     assert "European Union, Copernicus Emergency Management Service data (EMSR927)" in val["attribution"]
+

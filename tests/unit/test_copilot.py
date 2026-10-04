@@ -39,3 +39,4 @@ def test_copilot_english_and_nepali():
     # 4. Out of scope query returns ungrounded fallback
     res_unk = copilot.answer_query("What is the weather tomorrow in Paris?")
     assert "Insufficient information" in res_unk["answer"]
+

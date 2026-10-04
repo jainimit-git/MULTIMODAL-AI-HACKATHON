@@ -39,3 +39,4 @@ def test_sitrep_generator():
     assert "Trishuli District Hospital" in md
     assert "Village B" in md
     assert "Contains modified Copernicus Sentinel data 2026." in md
+
